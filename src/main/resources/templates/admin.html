@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://thymeleaf.org">
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Smart-document</title>
+    <meta name="viewport" content="width=device-width">
+    <link rel="stylesheet" th:href="@{/admin.css}">
+    <link rel="stylesheet" th:href="@{/font-family/stylesheet.css}">
+</head>
+<body>
+<!--    Шапка с лого-->
+<header class="header">
+    <!--        Лого-->
+    <div class="logo">
+        <img th:src="@{/SMART-DOCUMENT.png}" alt="SMART-DOCUMENT" class="logo__img"/>
+    </div>
+    <!--        ФИО-->
+    <div class="name_user">
+        <a class="name_user__text" href="#">
+            <!--                СЕРВЕР-->
+            Администратор системы смарт-контрактов
+        </a>
+    </div>
+    <!--        Кнопка выхода-->
+    <div class="exit">
+        <button class="exit__button">
+            Выход
+        </button>
+    </div>
+</header>
+<main class="main">
+    <div class="main__top">
+        <label>
+            <select name="tables" class="select">
+                <option th:each="table : ${tables}"
+                        th:value="${table.name}" th:text="${table.name}" class="select__option"></option>
+
+            </select>
+        </label>
+        <button class="exit__button close" id="exit__button">
+            Добавить
+        </button>
+    </div>
+    <div class="general">
+        <table class="table" id="table">
+<!--            <tr class="table__row">-->
+<!--                <th class="table__head">-->
+<!--                    Отправитель-->
+<!--                </th>-->
+<!--                <th class="table__head">-->
+
+<!--                </th>-->
+<!--            </tr>-->
+<!--            <tr class="table__row">-->
+<!--                <td class="table__column">-->
+<!--                    ООО "Сеть.ру"-->
+<!--                </td>-->
+<!--                <td class="table__column">-->
+<!--                    <button class="table__button">-->
+<!--                        Изменить-->
+<!--                    </button>-->
+<!--                </td>-->
+<!--            </tr>-->
+        </table>
+    </div>
+</main>
+
+<!--    edit form-->
+<div class="close" id="modalEdit" tabindex="-1">
+    <div class="modal_edit__header">
+        <span>Изменить запись</span>
+        <button class="modal_edit__close">
+            Закрыть
+        </button>
+    </div>
+    <div class="modal_edit__edit">
+        <form class="modal_edit__form">
+            <label class="form__label">
+                Первый столбик
+                <input type="text" value="Значение Первый столбик" class="form__input" placeholder="Первый столбик">
+            </label>
+            <input type="submit" value="Изменить" class="form__submit">
+        </form>
+    </div>
+</div>
+
+<!--    Подвал сайта-->
+<footer class="footer">
+        <span>
+            Smart-document, 2022
+        </span>
+</footer>
+
+<script>
+<!--    Запрос на заголовки таблицы, их содержимое и права-->
+    let selectEl = document.querySelector('.select');
+    selectEl.addEventListener('change', function () {
+        fetch('http://localhost:8080/admin/getHeaders/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(this.value)
+
+        }).then((headers) =>
+                fetch(`http://localhost:8080/admin/${this.value}`)
+                    .then(data => {
+                            // console.log(headers.json())
+                            // console.log(data.json())
+                            switchTable(this.value, headers.json(), data.json())
+                        }
+                    )
+                    .catch(e => console.log('error ', e)))
+            .catch(e => console.log('error ', e))
+    })
+
+
+    let table = document.getElementById('table')
+    let modalEdit = document.getElementById('modalEdit')
+    let header = document.querySelector('.header')
+    let main = document.querySelector('.main')
+
+    //Открытие модалки изменения
+    table.addEventListener('click', e => {
+        if (e.target.tagName === 'BUTTON'){
+            console.log(e.target)
+
+            modalEdit.classList.remove('close')
+            modalEdit.classList.add('modal_edit')
+            header.classList.add('main_hide')
+            main.classList.add('main_hide')
+
+            let parent = e.target.parentElement;
+            parent = parent.parentElement;
+            let firstChild = parent.firstElementChild;
+            let text = firstChild.textContent;
+            let editInput = modalEdit.querySelector('.form__input')
+            editInput.value = text.trim();
+        }
+    })
+
+    //Закрытие модалки
+    let closeEdit = document.querySelector('.modal_edit__close');
+    closeEdit.addEventListener('click', e => {
+        modalEdit.classList.add('close')
+        modalEdit.classList.remove('modal_edit')
+        header.classList.remove('main_hide')
+        main.classList.remove('main_hide')
+    })
+
+//    ВЫВОД
+function switchTable(tableName, headers, data){
+    // headers.then(r => headers = r)
+    console.log(data)
+    data.then(r => console.log(r[0]))
+    let table = document.getElementById('table');
+    table.innerHTML = '';
+    table.appendChild(tableHeaders(headers));
+    data.then(res => {
+        res.forEach(r => {
+            switch (tableName) {
+                case "Права_Доступа":
+                    let tr1 = document.createElement('tr');
+                    tr1.classList.add('table__row');
+                    tr1.appendChild(tableValue(r.authority))
+
+                    table.appendChild(tr1)
+                    break
+                case "Пользователи_эдо":
+                    let tr2 = document.createElement('tr');
+                    tr2.classList.add('table__row');
+                    tr2.appendChild(tableValue(r.user.name))
+                    tr2.appendChild(tableValue(r.token))
+
+                    table.appendChild(tr2)
+                    break
+                case "Классы_Логирования":
+                    let tr3 = document.createElement('tr');
+                    tr3.classList.add('table__row');
+                    tr3.appendChild(tableValue(r.classLogs))
+
+                    table.appendChild(tr3)
+                    break
+                case "Роли":
+                    let tr4 = document.createElement('tr');
+                    tr4.classList.add('table__row');
+                    tr4.appendChild(tableValue(r.name))
+
+                    table.appendChild(tr4)
+                    break
+                case "Смарт_контракты":
+                    let tr5 = document.createElement('tr');
+                    tr5.classList.add('table__row');
+                    tr5.appendChild(tableValue(r.name))
+
+                    tr5.appendChild(tableButton(r.id))
+                    table.appendChild(tr5)
+                    break
+                case "Статусы_Смарт_Контрактов":
+                    let tr6 = document.createElement('tr');
+                    tr6.classList.add('table__row');
+                    tr6.appendChild(tableValue(r.status))
+
+                    table.appendChild(tr6)
+                    break
+                case "Пользователи":
+                    let tr = document.createElement('tr');
+                    tr.classList.add('table__row');
+                    tr.appendChild(tableValue(r.name))
+                    tr.appendChild(tableValue(r.role[0].name))
+                    tr.appendChild(tableValue(r.login))
+                    tr.appendChild(tableValue(r.password))
+                    tr.appendChild(tableButton(r.id))
+
+                    table.appendChild(tr)
+                    break
+                // MONGO
+                case "Документация":
+                    break
+                // MONGO
+                case "Логи":
+                    break
+                // MONGO
+                case "Отчеты":
+                    break
+                // MONGO
+                case "Шаблоны_Смарт_контрактов":
+                    break
+            }
+        })
+
+    })
+}
+function tableHeaders(headers){
+     let tr = document.createElement('tr');
+     tr.classList.add('table__row');
+     headers.then(res => {
+         for (let i = 1; i < res.length - 2; i++){
+             let th = document.createElement('th');
+             th.classList.add('table__head')
+             th.textContent = String(res[i])
+             tr.appendChild(th)
+         }
+         if (res[res.length-2] === 'true'){
+             let th = document.createElement('th');
+             th.classList.add('table__head')
+             tr.appendChild(th)
+         }
+
+         let addButton = document.getElementById('exit__button')
+         if (res[res.length-1] === 'true'){
+             addButton.classList.remove('close')
+         } else {
+             if (!addButton.classList.contains('close')){
+                 addButton.classList.add('close')
+             }
+         }
+     })
+
+     return tr
+}
+
+function tableValue(val){
+    let td = document.createElement('td')
+    td.classList.add('table__column')
+    td.textContent = val
+    return td
+}
+function tableButton(id){
+    let td = document.createElement('td')
+    td.classList.add('table__column')
+    let button = document.createElement('button')
+    button.classList.add('table__button')
+    button.textContent = 'Изменить'
+    button.title = id
+    td.appendChild(button)
+    // td.innerHTML = '<button class="table__button" title="${id}">Изменить</button>'
+    return td
+}
+
+</script>
+
+</body>
+</html>
