@@ -16,10 +16,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.web.header.Header;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.function.EntityResponse;
 
 import javax.print.Doc;
@@ -152,5 +149,20 @@ public class RestAdmin {
     public ResponseEntity<List<String>> getTables() {
         return new ResponseEntity<>(Arrays.stream(Tables.values()).map(Enum::name).collect(Collectors.toList()), HttpStatus.OK);
     }
+
+    @PostMapping(value = "/admin/Пользователи/add")
+    public ResponseEntity addUser(@RequestBody User user) {
+        userService.add(user);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+
+    @GetMapping(value = "/admin/Пользователи/edit/{id}")
+    public ResponseEntity editUser(@RequestBody User user){
+        userService.edit(user);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+
 
 }
