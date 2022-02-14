@@ -1,9 +1,14 @@
 package Diplom.Smart.Dubinin.SmartCRUD.model.RelationModel;
 
 
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import javax.persistence.*;
 
 @Entity
+@NoArgsConstructor
+@Data
 public class SmartContracts {
 
     @Id
@@ -28,9 +33,6 @@ public class SmartContracts {
 
     @Column
     private String key;
-
-    public SmartContracts() {
-    }
 
     public SmartContracts(Long idTemplate, EDOsUser edOsUser, StatusSmartContract statusSmartContract, EDOsUser edOsUserTwo) {
         this.idTemplate = idTemplate;

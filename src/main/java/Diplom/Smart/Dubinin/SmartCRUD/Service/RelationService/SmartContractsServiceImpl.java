@@ -44,6 +44,9 @@ smartContractsDao.delete(id);
     @Override
     @Transactional
     public List<SmartContracts> getList() {
-        return smartContractsDao.getList();
+        List<SmartContracts> temp = smartContractsDao.getList();
+        System.out.println(2);
+        System.out.println(temp);
+        return temp;
     }
 }

@@ -36,6 +36,8 @@ public class SmartContractsDaoImpl implements SmartContractsDao {
 
     @Override
     public List<SmartContracts> getList() {
+        System.out.println(1);
+        System.out.println(entityManager.createQuery("SELECT smartContracts FROM SmartContracts smartContracts").getResultList());
         return entityManager.createQuery("SELECT smartContracts FROM SmartContracts smartContracts").getResultList();
     }
 }
