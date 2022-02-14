@@ -25,6 +25,7 @@ import org.springframework.web.servlet.function.EntityResponse;
 import javax.print.Doc;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 public class RestAdmin {
@@ -145,6 +146,11 @@ public class RestAdmin {
     public ResponseEntity<List<String>> nameTables(@RequestBody Tables name) {
 
         return new ResponseEntity<>(Arrays.asList(name.tables), HttpStatus.OK);
-}
+    }
+
+    @GetMapping(value = "/admin/getTables")
+    public ResponseEntity<List<String>> getTables() {
+        return new ResponseEntity<>(Arrays.stream(Tables.values()).map(Enum::name).collect(Collectors.toList()), HttpStatus.OK);
+    }
 
 }
