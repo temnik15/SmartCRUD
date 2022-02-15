@@ -5,6 +5,7 @@ import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
 import java.util.List;
 
 @Repository("RoleDaoImpl")
@@ -38,5 +39,14 @@ public class RoleDaoImpl implements RoleDao {
     public List<Role> getList() {
         return entityManager.createQuery("SELECT role FROM Role role").getResultList();
 
+    }
+
+    @Override
+    public Role getByName(String name) {
+        TypedQuery<Role> query = entityManager.createQuery(
+                        "select r from Role r where r.name =: name",
+                        Role.class)
+                .setParameter("name", name);
+        return query.getSingleResult();
     }
 }

@@ -17,4 +17,6 @@ public interface RoleService {
 //    Authorities getByName(String name);
 
     List<Role> getList();
+
+    Role getByName(String name);
 }

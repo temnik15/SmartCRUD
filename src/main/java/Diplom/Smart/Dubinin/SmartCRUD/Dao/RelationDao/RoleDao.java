@@ -17,4 +17,6 @@ public interface RoleDao {
 //    Authorities getByName(String name);
 
     List<Role> getList();
+
+    Role getByName(String name);
 }

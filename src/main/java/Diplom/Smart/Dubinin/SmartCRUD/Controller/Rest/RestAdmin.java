@@ -20,7 +20,9 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.function.EntityResponse;
 
 import javax.print.Doc;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -157,20 +159,23 @@ public class RestAdmin {
     }
 
 
-    @GetMapping(value = "/admin/Пользователи/edit")
-    public ResponseEntity editUser(@RequestParam("id") Long id,
-                                   @RequestParam("name") String name,
-                                   @RequestParam("login") String login,
-                                   @RequestParam("password") String password){
+    @PostMapping(value = "/admin/Пользователи/edit")
+    public ResponseEntity editUser(@RequestBody User user) {
 
-        User user = userService.getById(id);
-        user.setName(name);
-        user.setLogin(login);
-        user.setPassword(password);
+        System.out.println("////////////////////////////////////");
+        System.out.println(user);
+        System.out.println("////////////////////////////////////");
+
+
+        List<Role> roles = new ArrayList<>(user.getRole());
+        HashSet<Role> result = new HashSet<>();
+        for (int i = 0; i != roles.size(); i++) {
+            result.add(roleService.getByName(roles.get(i).getName()));
+        }
+        user.setRole(result);
         userService.edit(user);
         return new ResponseEntity<>(HttpStatus.OK);
+
+
     }
-
-
-
 }
