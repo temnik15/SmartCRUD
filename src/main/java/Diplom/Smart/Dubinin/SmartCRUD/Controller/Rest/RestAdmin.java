@@ -162,6 +162,7 @@ public class RestAdmin {
                                    @RequestParam("name") String name,
                                    @RequestParam("login") String login,
                                    @RequestParam("password") String password){
+
         User user = userService.getById(id);
         user.setName(name);
         user.setLogin(login);
