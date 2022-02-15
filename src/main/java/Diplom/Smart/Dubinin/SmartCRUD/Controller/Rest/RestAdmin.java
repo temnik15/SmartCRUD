@@ -84,6 +84,9 @@ public class RestAdmin {
     TemplateSmartContractService templateSmartContractService;
 
 
+
+
+
 //    @GetMapping(value = "/admin/Права_Доступа")
 //    public ResponseEntity<List<Authorities>> authorities() {
 //        return new ResponseEntity<>(authoritiesService.getList(), HttpStatus.OK);
@@ -152,8 +155,15 @@ public class RestAdmin {
         return new ResponseEntity<>(Arrays.stream(Tables.values()).map(Enum::name).collect(Collectors.toList()), HttpStatus.OK);
     }
 
+
     @PostMapping(value = "/admin/Пользователи/add")
     public ResponseEntity addUser(@RequestBody User user) {
+        List<Role> roles = new ArrayList<>(user.getRole());
+        HashSet<Role> result = new HashSet<>();
+        for (int i = 0; i != roles.size(); i++) {
+            result.add(roleService.getByName(roles.get(i).getName()));
+        }
+        user.setRole(result);
         userService.add(user);
         return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -161,12 +171,6 @@ public class RestAdmin {
 
     @PostMapping(value = "/admin/Пользователи/edit")
     public ResponseEntity editUser(@RequestBody User user) {
-
-        System.out.println("////////////////////////////////////");
-        System.out.println(user);
-        System.out.println("////////////////////////////////////");
-
-
         List<Role> roles = new ArrayList<>(user.getRole());
         HashSet<Role> result = new HashSet<>();
         for (int i = 0; i != roles.size(); i++) {
@@ -175,7 +179,6 @@ public class RestAdmin {
         user.setRole(result);
         userService.edit(user);
         return new ResponseEntity<>(HttpStatus.OK);
-
-
     }
+
 }
