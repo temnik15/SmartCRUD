@@ -157,8 +157,15 @@ public class RestAdmin {
     }
 
 
-    @GetMapping(value = "/admin/Пользователи/edit/{id}")
-    public ResponseEntity editUser(@RequestBody User user){
+    @GetMapping(value = "/admin/Пользователи/edit")
+    public ResponseEntity editUser(@RequestParam("id") Long id,
+                                   @RequestParam("name") String name,
+                                   @RequestParam("login") String login,
+                                   @RequestParam("password") String password){
+        User user = userService.getById(id);
+        user.setName(name);
+        user.setLogin(login);
+        user.setPassword(password);
         userService.edit(user);
         return new ResponseEntity<>(HttpStatus.OK);
     }
