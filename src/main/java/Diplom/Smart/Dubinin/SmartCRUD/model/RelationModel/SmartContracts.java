@@ -34,11 +34,13 @@ public class SmartContracts {
     @Column
     private String key;
 
-    public SmartContracts(Long idTemplate, EDOsUser edOsUser, StatusSmartContract statusSmartContract, EDOsUser edOsUserTwo) {
+    public SmartContracts(Long idTemplate, EDOsUser edOsUser, StatusSmartContract statusSmartContract, EDOsUser edOsUserTwo, String key, String name) {
         this.idTemplate = idTemplate;
         this.edOsUserOne = edOsUser;
         this.edOsUserTwo = edOsUserTwo;
         this.statusSmartContract = statusSmartContract;
+        this.key = key;
+        this.name = name;
     }
 
 

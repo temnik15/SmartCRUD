@@ -157,7 +157,7 @@ public class RestAdmin {
 
 
     @PostMapping(value = "/admin/Пользователи/add")
-    public ResponseEntity addUser(@RequestBody User user) {
+    public ResponseEntity<User> actionAdd(@RequestBody User user) {
         List<Role> roles = new ArrayList<>(user.getRole());
         HashSet<Role> result = new HashSet<>();
         for (int i = 0; i != roles.size(); i++) {
@@ -165,7 +165,7 @@ public class RestAdmin {
         }
         user.setRole(result);
         userService.add(user);
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
 

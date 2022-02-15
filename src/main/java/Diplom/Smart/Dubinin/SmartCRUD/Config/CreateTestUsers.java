@@ -72,10 +72,15 @@ public class CreateTestUsers {
         roleService.add(role);
         userRole.add(role);
 
+        Set<Role> userRole2 = new HashSet<>();
+        Role role2 = new Role("ROLE_EDO");
+        roleService.add(role2);
+        userRole2.add(role2);
+
+        User user2 = new User(userRole2, "edo", "1", "Smart-document");
+        userService.add(user2);
 
         User user = new User(userRole, "spell", "1", "andrey");
-
-
         userService.add(user);
 
         templateSmartContractService.add(new TemplateSmartContract(1L, "hello"));
@@ -87,13 +92,24 @@ public class CreateTestUsers {
         reportService.add(new Report(1L, user, "msgs"));
 
 
-        EDOsUser edOsUser = new EDOsUser(user, "2343");
+        EDOsUser edOsUser = new EDOsUser(user2, "2343", "ОАО Газпром");
         edOsUserService.add(edOsUser);
+        EDOsUser edOsUser2 = new EDOsUser(user2, "4657", "ИП Топилина Анна Викторовна");
+        edOsUserService.add(edOsUser2);
+        EDOsUser edOsUser3 = new EDOsUser(user2, "8467", "ООО Сеть.ру");
+        edOsUserService.add(edOsUser3);
+        EDOsUser edOsUser4 = new EDOsUser(user2, "2564", "ООО Воображение");
+        edOsUserService.add(edOsUser4);
+        EDOsUser edOsUser5 = new EDOsUser(user2, "5464", "ЗАО Креативность");
+        edOsUserService.add(edOsUser5);
+
+
         StatusSmartContract statusSmartContract = new StatusSmartContract("loading");
         statusSmartContractService.add(statusSmartContract);
+        StatusSmartContract statusSmartContract2 = new StatusSmartContract("finish");
+        statusSmartContractService.add(statusSmartContract2);
 
-        smartContractService.add(new SmartContracts(1L,edOsUser,statusSmartContract, edOsUser ));
-
+        smartContractService.add(new SmartContracts(1L, edOsUser, statusSmartContract, edOsUser2, "4t356547", "Договор поставки товара №1"));
 
 
     }

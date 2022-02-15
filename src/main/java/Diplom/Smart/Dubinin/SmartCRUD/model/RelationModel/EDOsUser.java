@@ -22,9 +22,10 @@ public class EDOsUser {
     public EDOsUser() {
     }
 
-    public EDOsUser(User user, String token) {
+    public EDOsUser(User user, String token, String name) {
         this.user = user;
         this.token = token;
+        this.name = name;
     }
 
 
